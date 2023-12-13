@@ -63,6 +63,7 @@ public class SmartTank : AITank
     public string ENEMYHEALTHLOWER => "EnemyHealthLower";
     public string TARGETINRANGE => "TargetInRange";
     public string NOTARGETINRANGE => "NoTargetInRange";
+    public string REACHEDLASTPOS => "ReachedLastPos";
 
     public override void AITankStart()
     {
@@ -98,7 +99,7 @@ public class SmartTank : AITank
         facts.Add(BADFUEL, false);
         facts.Add(CANSEEENEMY, false);
         facts.Add(ENEMYCANSEEUS, false);
-        facts.Add (ENEMYHEALTHHIGHER, false);
+        facts.Add(ENEMYHEALTHHIGHER, false);
         facts.Add(ENEMYHEALTHLOWER, false);
         facts.Add(GOODAMMO, false);
         facts.Add(TARGETINRANGE, false);
@@ -107,7 +108,7 @@ public class SmartTank : AITank
         _rules.AddRule(new Rule(ROAMSTATE, TARGETINRANGE, typeof(ChaseState), Rule.Predicate.And));
         _rules.AddRule(new Rule(CHASESTATE, ENEMYTANKFOUND, typeof(CombatState), Rule.Predicate.And));
         //_rules.AddRule(new Rule(ROAMSTATE, HEALTHFOUND, typeof(CampState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(ROAMSTATE,HEALTHFOUND,typeof(RefillState), Rule.Predicate.And));
+        _rules.AddRule(new Rule(ROAMSTATE, HEALTHFOUND, typeof(RefillState), Rule.Predicate.And));
         _rules.AddRule(new Rule(ROAMSTATE, FUELFOUND, typeof(RefillState), Rule.Predicate.And));
         _rules.AddRule(new Rule(ROAMSTATE, AMMOFOUND, typeof(RefillState), Rule.Predicate.And));
         _rules.AddRule(new Rule(CHASESTATE, BASEFOUND, typeof(CombatState), Rule.Predicate.And));
@@ -119,6 +120,7 @@ public class SmartTank : AITank
         _rules.AddRule(new Rule(CLOSECOMBATSTATE, NOTARGETINRANGE, typeof(RoamState), Rule.Predicate.And));
         _rules.AddRule(new Rule(LONGCOMBATSTATE, NOTARGETINRANGE, typeof(RoamState), Rule.Predicate.And));
         _rules.AddRule(new Rule(COMBATSTATE, NOTARGETINRANGE, typeof(RoamState), Rule.Predicate.And));
+        _rules.AddRule(new Rule(CHASESTATE, REACHEDLASTPOS, typeof(RoamState), Rule.Predicate.And));
     }
 
     public override void AITankUpdate()
@@ -135,7 +137,7 @@ public class SmartTank : AITank
         facts[CANSEEENEMY] = facts[ENEMYTANKFOUND] || facts[BASEFOUND];
         facts[ENEMYCANSEEUS] = facts[ENEMYTANKFOUND] && Vector3.Dot(enemyTanksFound.Keys.First().transform.forward, transform.forward) < 0;
         facts[NOAMMO] = GetAmmoLevel == 0;
-        facts[GOODAMMO] =!facts[NOAMMO];
+        facts[GOODAMMO] = !facts[NOAMMO];
         facts[AMMOFOUND] = ConsumablesFound.Count > 0 && ConsumablesFound.Where(x => x.Key.CompareTag("Ammo")).Count() > 0;
         facts[HEALTHFOUND] = ConsumablesFound.Count > 0 && ConsumablesFound.Where(x => x.Key.CompareTag("Health")).Count() > 0;
         facts[FUELFOUND] = ConsumablesFound.Count > 0 && ConsumablesFound.Where(x => x.Key.CompareTag("Fuel")).Count() > 0;
@@ -145,6 +147,7 @@ public class SmartTank : AITank
         facts[ENEMYHEALTHLOWER] = !facts[ENEMYHEALTHHIGHER];
         facts[TARGETINRANGE] = enemyTanksFound.Count > 0 || enemyBasesFound.Count > 0;
         facts[NOTARGETINRANGE] = !facts[TARGETINRANGE];
+        facts[REACHEDLASTPOS] = Vector3.Distance(transform.position, lastSeenPos.transform.position) < 5f;
 
 
 
@@ -186,11 +189,29 @@ public class SmartTank : AITank
     public void Attack()
     {
 
-        if (IsFiring) return;
-        Destroy(attackPoint);
-        attackPoint = new();
         Debug.Log(enemyTanksFound.Count);
-        attackPoint.transform.position = facts[ENEMYTANKFOUND] ? enemyTanksFound.Keys.First().transform.position : enemyBasesFound.First().Key.transform.position;
+        if (facts[ENEMYTANKFOUND])
+        {
+            attackPoint.transform.position = enemyTanksFound.Keys.First().transform.position;
+            var TankDistance = enemyTanksFound.First().Value;
+            Vector3 EnemyDirecion = enemyTanksFound.Keys.First().transform.forward;
+            attackPoint.transform.position += EnemyDirecion* enemyTanksFound.Keys.First().GetComponent<Rigidbody>().velocity.magnitude;
+
+        }
+        //else if (enemyBasesFound.Count == 2)
+        //{
+            
+        //}
+        else if (facts[BASEFOUND])
+        {
+            if (IsFiring) return;
+            attackPoint.transform.position = enemyBasesFound.Keys.First().transform.position;
+        }
+        
+        if (IsFiring) return;
+
+
+
         FireAtPoint(attackPoint);
     }
 
@@ -200,7 +221,7 @@ public class SmartTank : AITank
         GameObject target = null;
         if (facts[FUELFOUND]) target = ConsumablesFound.Where(x => x.Key.CompareTag("Fuel")).First().Key;
         else if (facts[HEALTHFOUND]) target = ConsumablesFound.Where(x => x.Key.CompareTag("Health")).First().Key;
-        else if (facts[AMMOFOUND]) target = ConsumablesFound.Where(x => x.Key.CompareTag("Ammo")).First().Key; 
+        else if (facts[AMMOFOUND]) target = ConsumablesFound.Where(x => x.Key.CompareTag("Ammo")).First().Key;
         if (target == null) return;
         FollowPathToPoint(target, .8f);
     }

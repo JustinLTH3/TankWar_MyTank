@@ -15,6 +15,7 @@ public class ChaseState : BaseState
     public override void StateEnter()
     {
         _myTank.facts[_myTank.CHASESTATE] = true;
+        Debug.Log("ChaseState");
     }
 
     public override Type StateUpdate()
