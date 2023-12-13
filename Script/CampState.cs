@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class CampState : BaseState
 {
-    private MyTank _myTank;
+    private SmartTank _myTank;
 
-    public CampState(MyTank myTank)
+    public CampState(SmartTank myTank)
     {
         _myTank = myTank;
     }

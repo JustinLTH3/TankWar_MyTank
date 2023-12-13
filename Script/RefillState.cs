@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class RefillState : BaseState
 {
-    private MyTank _myTank;
+    private SmartTank _myTank;
     private float t;
 
-    public RefillState(MyTank myTank)
+    public RefillState(SmartTank myTank)
     {
         _myTank = myTank;
     }

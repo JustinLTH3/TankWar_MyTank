@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FleeState : BaseState
 {
-    public FleeState(MyTank tank) 
+    public FleeState(SmartTank tank) 
     {
         //EnemyLocation, Enemy Vision Direction, Medkit locations, 
     }

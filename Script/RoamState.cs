@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class RoamState : BaseState
 {
-    private MyTank _myTank;
+    private SmartTank _myTank;
 
     List<string> doCombat = new List<string>();
     List<string> doRefill = new List<string>();
@@ -12,7 +12,7 @@ public class RoamState : BaseState
 
     
 
-    public RoamState(MyTank myTank)
+    public RoamState(SmartTank myTank)
     {
         _myTank = myTank;
 

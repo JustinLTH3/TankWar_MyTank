@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CombatState : BaseState
 {
-    private MyTank _myTank;
+    private SmartTank _myTank;
 
-    public CombatState(MyTank myTank)
+    public CombatState(SmartTank myTank)
     {
         _myTank = myTank;
     }
@@ -30,8 +30,8 @@ public class CombatState : BaseState
 }
 public class CloseCombatState : BaseState
 {
-    MyTank _myTank;
-    public CloseCombatState(MyTank myTank)
+    SmartTank _myTank;
+    public CloseCombatState(SmartTank myTank)
     {
         _myTank = myTank;
     }
@@ -52,14 +52,14 @@ public class CloseCombatState : BaseState
         Debug.Log(_myTank.enemyTanksFound);
         if (_myTank.facts[_myTank.ENEMYTANKFOUND] || _myTank.facts[_myTank.BASEFOUND]) { _myTank.Attack(); }
         else { return typeof(CombatState); }
-        return null;
+        return typeof(RoamState);
     }
 }
 
 public class LongCombatState : BaseState
 {
-    MyTank _myTank;
-    public LongCombatState(MyTank myTank)
+    SmartTank _myTank;
+    public LongCombatState(SmartTank myTank)
     {
         _myTank = myTank;
     }
