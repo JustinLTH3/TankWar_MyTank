@@ -1,26 +1,41 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using UnityEngine;
 
 public class FleeState : BaseState
 {
-    public FleeState(SmartTank tank) 
+    private SmartTank _myTank;
+    private float t;
+
+    public FleeState(SmartTank MyTank) 
     {
-        //EnemyLocation, Enemy Vision Direction, Medkit locations, 
+        _myTank = MyTank;
     }
     public override void StateEnter()
-    {
-        throw new NotImplementedException();
+    { 
+        _myTank.facts[_myTank.FLEESTATE] = true;
+        t = 0;
     }
 
     public override void StateExit()
     {
-        throw new NotImplementedException();
+        _myTank.facts[_myTank.FLEESTATE] = false;
     }
 
     public override Type StateUpdate()
     {
-        throw new NotImplementedException();
+        t += Time.deltaTime;
+        if(t < 5) 
+        {
+            _myTank.Fleeing();
+        }
+        else if (_myTank.checkForEnemy())
+        {
+            t=0;
+            return typeof(RoamState);
+        }
+        return null;
     }
 }

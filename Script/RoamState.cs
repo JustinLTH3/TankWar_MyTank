@@ -37,7 +37,6 @@ public class RoamState : BaseState
         if (Selection(doCombat, _myTank.facts)) { return typeof(CombatState); }
         if (Selection(doCamping, _myTank.facts)) { return typeof(CampState); }
         if (Selection(doRefill,_myTank.facts)) { return typeof(RefillState); }
-        if (Selection(doCloseCombat,_myTank.facts)) { return typeof(CloseCombatState); }
         return null;
     }
 

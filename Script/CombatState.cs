@@ -19,7 +19,8 @@ public class CombatState : BaseState
 
     public override Type StateUpdate()
     {
-        if (!_myTank.facts[_myTank.ENEMYTANKFOUND]) return typeof(RoamState);
+        if (_myTank.facts[_myTank.ENEMYTANKFOUND] || _myTank.facts[_myTank.BASEFOUND]) { _myTank.Attack(); }
+        else return typeof(RoamState);
         return null;
     }
 
@@ -28,6 +29,8 @@ public class CombatState : BaseState
         _myTank.facts[_myTank.COMBATSTATE] = false;
     }
 }
+
+/*
 public class CloseCombatState : BaseState
 {
     SmartTank _myTank;
@@ -84,3 +87,4 @@ public class LongCombatState : BaseState
         return null;
     }
 }
+*/
