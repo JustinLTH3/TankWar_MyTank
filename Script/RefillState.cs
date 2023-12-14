@@ -4,7 +4,6 @@ using UnityEngine;
 public class RefillState : BaseState
 {
     private SmartTank _myTank;
-    private float t;
 
     public RefillState(SmartTank myTank)
     {
@@ -14,7 +13,6 @@ public class RefillState : BaseState
     public override void StateEnter()
     {
         _myTank.facts[_myTank.REFILLSTATE] = true;
-        t = 0;
     }
 
     public override Type StateUpdate()

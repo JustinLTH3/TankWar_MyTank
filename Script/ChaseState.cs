@@ -20,8 +20,7 @@ public class ChaseState : BaseState
 
     public override Type StateUpdate()
     {
-        _myTank.Chase();
-        return null;
+        return _myTank.Chase();
     }
 
     public override void StateExit()
