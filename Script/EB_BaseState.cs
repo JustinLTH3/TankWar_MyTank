@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public abstract class BaseState
+public abstract class EB_BaseState
 {
     public abstract void StateEnter();
     public abstract Type StateUpdate();

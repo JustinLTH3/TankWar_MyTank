@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-public class RefillState : BaseState
+public class EB_RefillState : EB_BaseState
 {
-    private SmartTank _myTank;
+    private EB_SmartTank _myTank;
 
-    public RefillState(SmartTank myTank)
+    public EB_RefillState(EB_SmartTank myTank)
     {
         _myTank = myTank;
     }
@@ -18,7 +18,7 @@ public class RefillState : BaseState
     public override Type StateUpdate()
     {
         _myTank.Refill();
-        return typeof(RoamState);
+        return typeof(EB_RoamState);
     }
 
     public override void StateExit()

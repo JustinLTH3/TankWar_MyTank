@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour
+public class EB_StateMachine : MonoBehaviour
 {
-    public BaseState CurrentState { get; private set; }
-    Dictionary<Type, BaseState> states = new Dictionary<Type, BaseState>();
+    public EB_BaseState CurrentState { get; private set; }
+    Dictionary<Type, EB_BaseState> states = new Dictionary<Type, EB_BaseState>();
 
-    public void AddState(Type tState, BaseState state)
+    public void AddState(Type tState, EB_BaseState state)
     {
         states.Add(tState, state);
         if (CurrentState != null) return;
@@ -34,7 +34,7 @@ public class StateMachine : MonoBehaviour
         SwitchState(states[state]);
     }
 
-    void SwitchState(BaseState state)
+    void SwitchState(EB_BaseState state)
     {
         CurrentState.StateExit();
         CurrentState = state;

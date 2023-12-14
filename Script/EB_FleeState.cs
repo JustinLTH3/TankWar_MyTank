@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 
-public class FleeState : BaseState
+public class EB_FleeState : EB_BaseState
 {
-    private SmartTank _myTank;
+    private EB_SmartTank _myTank;
     private float t;
 
-    public FleeState(SmartTank MyTank)
+    public EB_FleeState(EB_SmartTank MyTank)
     {
         _myTank = MyTank;
     }
@@ -34,7 +34,7 @@ public class FleeState : BaseState
         else if (_myTank.checkForEnemy())
         {
 
-            return typeof(RoamState);
+            return typeof(EB_RoamState);
         }
         else
         {

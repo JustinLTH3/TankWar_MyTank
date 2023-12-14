@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Rule
+public class EB_Rule
 {
     private string _antecedentA;
     private string _antecedentB;
@@ -15,7 +15,7 @@ public class Rule
         NAnd
     }
 
-    public Rule(string antecedentA, string antecedentB, Type consequence, Predicate predicate)
+    public EB_Rule(string antecedentA, string antecedentB, Type consequence, Predicate predicate)
     {
         _antecedentA = antecedentA;
         _antecedentB = antecedentB;

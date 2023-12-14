@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class RoamState : BaseState
+public class EB_RoamState : EB_BaseState
 {
-    private SmartTank _myTank;
+    private EB_SmartTank _myTank;
 
     List<string> doCombat = new List<string>();
     List<string> doRefill = new List<string>();
@@ -12,7 +12,7 @@ public class RoamState : BaseState
 
     
 
-    public RoamState(SmartTank myTank)
+    public EB_RoamState(EB_SmartTank myTank)
     {
         _myTank = myTank;
 
@@ -34,8 +34,8 @@ public class RoamState : BaseState
     public override Type StateUpdate()
     {
         _myTank.Search();
-        if (Selection(doCombat, _myTank.facts)) { return typeof(CombatState); }
-        if (Selection(doRefill,_myTank.facts)) { return typeof(RefillState); }
+        if (Selection(doCombat, _myTank.facts)) { return typeof(EB_CombatState); }
+        if (Selection(doRefill,_myTank.facts)) { return typeof(EB_RefillState); }
         return null;
     }
 

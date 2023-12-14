@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class ChaseState : BaseState
+public class EB_ChaseState : EB_BaseState
 {
-    private SmartTank _myTank;
+    private EB_SmartTank _myTank;
 
-    public ChaseState(SmartTank myTank)
+    public EB_ChaseState(EB_SmartTank myTank)
     {
         _myTank = myTank;
     }

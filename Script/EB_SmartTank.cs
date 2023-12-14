@@ -6,29 +6,22 @@ using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using System.Data;
 
-public class SmartTank : AITank
+public class EB_SmartTank : AITank
 {
     //store ALL currently visible 
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
     public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();
 
-    public Dictionary<GameObject, Vector3> targetLastFrame;
-
     public GameObject attackPoint;
     public GameObject lastSeenPos;
 
     //store ONE from ALL currently visible
     public GameObject enemyTankPosition;
-    public GameObject consumablePosition;
     public GameObject enemyBasePosition;
 
-    //timer
-    float t;
-
-
-    private StateMachine _stateMachine;
-    private Rules _rules = new();
+    private EB_StateMachine _stateMachine;
+    private EB_Rules _rules = new();
     public Dictionary<string, bool> facts = new();
 
     public string ROAMSTATE => "RoamState";
@@ -65,7 +58,7 @@ public class SmartTank : AITank
         attackPoint = new GameObject();
         lastSeenPos = new GameObject();
 
-        _stateMachine = gameObject.AddComponent<StateMachine>();
+        _stateMachine = gameObject.AddComponent<EB_StateMachine>();
 
         facts.Add(ROAMSTATE, false);
         facts.Add(REFILLSTATE, false);
@@ -73,11 +66,11 @@ public class SmartTank : AITank
         facts.Add(FLEESTATE, false);
         facts.Add(CHASESTATE, false);
 
-        _stateMachine.AddState(typeof(RoamState), new RoamState(this));
-        _stateMachine.AddState(typeof(CombatState), new CombatState(this));
-        _stateMachine.AddState(typeof(RefillState), new RefillState(this));
-        _stateMachine.AddState(typeof(FleeState), new FleeState(this));
-        _stateMachine.AddState(typeof(ChaseState), new ChaseState(this));
+        _stateMachine.AddState(typeof(EB_RoamState), new EB_RoamState(this));
+        _stateMachine.AddState(typeof(EB_CombatState), new EB_CombatState(this));
+        _stateMachine.AddState(typeof(EB_RefillState), new EB_RefillState(this));
+        _stateMachine.AddState(typeof(EB_FleeState), new EB_FleeState(this));
+        _stateMachine.AddState(typeof(EB_ChaseState), new EB_ChaseState(this));
 
         facts.Add(ENEMYTANKFOUND, false);
         facts.Add(HEALTHFOUND, false);
@@ -90,22 +83,22 @@ public class SmartTank : AITank
         facts.Add(TARGETINRANGE, false);
         facts.Add(NOTARGETINRANGE, false);
 
-        _rules.AddRule(new Rule(ROAMSTATE, TARGETINRANGE, typeof(ChaseState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(ROAMSTATE, HEALTHFOUND, typeof(RefillState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(ROAMSTATE, FUELFOUND, typeof(RefillState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(ROAMSTATE, AMMOFOUND, typeof(RefillState), Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(ROAMSTATE, TARGETINRANGE, typeof(EB_ChaseState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(ROAMSTATE, HEALTHFOUND, typeof(EB_RefillState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(ROAMSTATE, FUELFOUND, typeof(EB_RefillState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(ROAMSTATE, AMMOFOUND, typeof(EB_RefillState), EB_Rule.Predicate.And));
 
-        _rules.AddRule(new Rule(CHASESTATE, ENEMYTANKFOUND, typeof(CombatState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(CHASESTATE, BASEFOUND, typeof(CombatState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(CHASESTATE, REACHEDLASTPOS, typeof(RoamState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(CHASESTATE, NOAMMO, typeof(RoamState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(CHASESTATE, BADFUEL, typeof(RoamState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(CHASESTATE, LOWHEALTH, typeof(RoamState), Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, ENEMYTANKFOUND, typeof(EB_CombatState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, BASEFOUND, typeof(EB_CombatState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, REACHEDLASTPOS, typeof(EB_RoamState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, NOAMMO, typeof(EB_RoamState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, BADFUEL, typeof(EB_RoamState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(CHASESTATE, LOWHEALTH, typeof(EB_RoamState), EB_Rule.Predicate.And));
 
-        _rules.AddRule(new Rule(COMBATSTATE, NOTARGETINRANGE, typeof(RoamState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(COMBATSTATE, LOWHEALTH, typeof(FleeState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(COMBATSTATE, BADFUEL, typeof(FleeState), Rule.Predicate.And));
-        _rules.AddRule(new Rule(COMBATSTATE, NOAMMO, typeof(FleeState), Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(COMBATSTATE, NOTARGETINRANGE, typeof(EB_RoamState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(COMBATSTATE, LOWHEALTH, typeof(EB_FleeState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(COMBATSTATE, BADFUEL, typeof(EB_FleeState), EB_Rule.Predicate.And));
+        _rules.AddRule(new EB_Rule(COMBATSTATE, NOAMMO, typeof(EB_FleeState), EB_Rule.Predicate.And));
     }
 
     public override void AITankUpdate()
@@ -152,7 +145,7 @@ public class SmartTank : AITank
         FollowPathToRandomPoint(facts[BADFUEL] ? 0.5f : 0.7f);
     }
 
-    //Chasing the tank or 
+    //Chasing the tank or go to the base
     public Type Chase()
     {
         UpdateFacts();
@@ -172,12 +165,12 @@ public class SmartTank : AITank
                 return null;
             }
         }
-        else if (lastSeenPos != null)
+        else if (lastSeenPos != null)//if we can't see any target go to last seen position of the tank
         {
             FollowPathToPoint(lastSeenPos, 1f);
             if (facts[REACHEDLASTPOS])
             {
-                return typeof(RoamState);
+                return typeof(EB_RoamState);
             }
         }
         return null;
